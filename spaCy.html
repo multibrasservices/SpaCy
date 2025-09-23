@@ -1,0 +1,335 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Graphe de Connaissances - Tutoriel spaCy NER</title>
+    <link rel="icon" href="https://spacy.io/favicon.ico" type="image/png">
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style type="text/css">
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            background-color: #f4f7f9;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2 {
+            color: #0d3a5f;
+            text-align: center;
+        }
+        p {
+            text-align: center;
+            color: #555;
+        }
+        #graph-container {
+            display: flex;
+            flex-direction: row;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            height: 85vh;
+        }
+        #mynetwork {
+            width: 70%;
+            border-right: 1px solid #ccc;
+            height: 100%;
+        }
+        #info-panel {
+            width: 30%;
+            padding: 20px;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+        #info-panel h3 {
+            margin-top: 0;
+            color: #005a9c;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 10px;
+        }
+        #info-panel p {
+            text-align: left;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        #info-panel ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        #info-panel li {
+            background-color: #eef5ff;
+            margin-bottom: 8px;
+            padding: 10px;
+            border-radius: 4px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 13px;
+            word-wrap: break-word;
+        }
+        #info-panel .method-fonction {
+            border-left: 4px solid #61affe; /* Blue */
+        }
+        #info-panel .method-attribut {
+            border-left: 4px solid #49cc90; /* Green */
+        }
+        #info-panel .method-objet {
+            border-left: 4px solid #fca130; /* Orange */
+        }
+        #info-panel .method-processus {
+            border-left: 4px solid #9d4edd; /* Purple */
+        }
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            color: #777;
+            font-size: 12px;
+            border-top: 1px solid #eee;
+        }
+        .docs-link {
+            text-align: center;
+            margin: -10px 0 20px 0;
+        }
+        .docs-link a {
+            color: #005a9c;
+            text-decoration: none;
+            font-weight: 500;
+        }
+        .docs-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Graphe de Connaissances du Tutoriel spaCy NER</h1>
+    <p>Cliquez sur un nœud pour explorer les concepts et leurs relations.</p>
+
+    <p class="docs-link">Basé sur le tutoriel fourni. Pour plus de détails, consultez la <a href="https://spacy.io/usage/spacy-101" target="_blank" rel="noopener noreferrer">documentation officielle de spaCy</a>.</p>
+
+    <div id="graph-container">
+        <div id="mynetwork"></div>
+        <div id="info-panel">
+            <h3>Détails du Concept</h3>
+            <p>Sélectionnez un élément dans le graphe pour afficher sa description et les opérations associées ici.</p>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        const nodeDetails = {
+            corpus: {
+                title: "Corpus de Données",
+                description: "Un ensemble de textes (fichiers) qui sert de source pour l'analyse, l'entraînement et l'évaluation. Dans le tutoriel, il s'agit du 'French ELTEC NER Open Dataset'.",
+                endpoints: [
+                    { method: "Processus", path: "Téléchargement des données" },
+                    { method: "Processus", path: "Décompression des fichiers" },
+                    { method: "Fonction", path: "glob.glob() pour lister les fichiers" },
+                ]
+            },
+            texte: {
+                title: "Texte Brut (chaîne de caractères)",
+                description: "Le contenu textuel d'un fichier, lu en tant que simple chaîne de caractères. C'est l'entrée brute pour le modèle de langue.",
+                endpoints: [
+                    { method: "Fonction", path: "open(filename).read()" },
+                ]
+            },
+            nlp: {
+                title: "Modèle de Langage (nlp)",
+                description: "L'objet central de spaCy qui contient le pipeline de traitement (tokenisation, NER, etc.). Il est chargé et appliqué au texte brut pour créer un objet Doc.",
+                endpoints: [
+                    { method: "Fonction", path: "spacy.load('fr_core_news_sm')" },
+                    { method: "Fonction", path: "nlp('Votre texte ici...')" },
+                    { method: "Attribut", path: "nlp.pipe_names" },
+                    { method: "Attribut", path: "nlp.pipe()" },
+                ]
+            },
+            doc: {
+                title: "Objet Doc",
+                description: "Un conteneur riche pour le texte traité. Il contient les tokens, les spans, les entités nommées et toutes les annotations générées par le pipeline.",
+                endpoints: [
+                    { method: "Attribut", path: "doc.ents" },
+                    { method: "Attribut", path: "doc.text" },
+                    { method: "Objet", path: "Itération : for token in doc:" },
+                ]
+            },
+            token: {
+                title: "Token",
+                description: "L'unité de base du texte, généralement un mot ou un signe de ponctuation. Un objet Doc est une séquence de Tokens.",
+                endpoints: [
+                    { method: "Attribut", path: "token.text" },
+                    { method: "Attribut", path: "token.pos_" },
+                    { method: "Attribut", path: "token.dep_" },
+                    { method: "Attribut", path: "token.is_alpha, token.is_punct" },
+                ]
+            },
+            span: {
+                title: "Span",
+                description: "Une tranche d'un objet Doc, composée d'un ou plusieurs tokens contigus. Les entités nommées sont représentées comme des Spans.",
+                endpoints: [
+                    { method: "Attribut", path: "span.text" },
+                    { method: "Attribut", path: "span.label_" },
+                    { method: "Attribut", path: "span.start, span.end" },
+                ]
+            },
+            entite: {
+                title: "Entité Nommée (NER)",
+                description: "Un Span auquel une étiquette (label) a été assignée (ex: 'PER' pour personne, 'LOC' pour lieu). C'est le résultat principal de la reconnaissance d'entités.",
+                endpoints: [
+                    { method: "Attribut", path: "doc.ents (liste les entités)" },
+                    { method: "Attribut", path: "ent.text, ent.label_" },
+                ]
+            },
+            visualisation: {
+                title: "Visualisation (displaCy)",
+                description: "L'outil intégré de spaCy pour afficher de manière graphique les entités nommées ou les dépendances syntaxiques directement dans un notebook ou une page web.",
+                endpoints: [
+                    { method: "Fonction", path: "displacy.render(doc, style='ent')" },
+                ]
+            },
+            evaluation: {
+                title: "Évaluation de Performance",
+                description: "Le processus qui consiste à mesurer la qualité d'un modèle en comparant ses prédictions à une vérité terrain (données annotées).",
+                endpoints: [
+                    { method: "Processus", path: "Calcul de Précision, Rappel, F-score" },
+                ]
+            },
+            scorer: {
+                title: "Objet Scorer",
+                description: "Un objet spaCy qui calcule les métriques de performance (Précision, Rappel, F-score) en comparant les entités prédites et les entités de référence.",
+                endpoints: [
+                    { method: "Objet", path: "Scorer()" },
+                    { method: "Fonction", path: "scorer.score_spans(examples, 'ents')" },
+                ]
+            },
+            entrainement: {
+                title: "Entraînement de Modèle",
+                description: "Le processus d'apprentissage ou de spécialisation d'un modèle NER à partir d'exemples annotés (jeu d'entraînement).",
+                endpoints: [
+                    { method: "Processus", path: "python -m spacy train ..." },
+                ]
+            },
+            config: {
+                title: "Fichier de Configuration",
+                description: "Un fichier (.cfg) qui définit tous les paramètres pour l'entraînement d'un modèle : architecture, hyperparamètres, chemins des données, etc.",
+                endpoints: [
+                    { method: "Processus", path: "spacy init fill-config" },
+                ]
+            },
+            export: {
+                title: "Export des Données",
+                description: "L'étape finale où les résultats extraits (par exemple, la liste de toutes les entités de type 'LOC') sont sauvegardés dans un format structuré (JSON) pour une utilisation ultérieure.",
+                endpoints: [
+                    { method: "Fonction", path: "json.dump(data, file)" },
+                ]
+            }
+        };
+
+        const nodes = new vis.DataSet([
+            { id: "corpus", label: "Corpus", group: 0, mass: 3 },
+            { id: "texte", label: "Texte Brut", group: 1, mass: 2 },
+            { id: "nlp", label: "Modèle (nlp)", group: 2, mass: 4 },
+            { id: "doc", label: "Objet Doc", group: 3, mass: 3 },
+            { id: "token", label: "Token", group: 4, mass: 1 },
+            { id: "span", label: "Span", group: 4, mass: 1 },
+            { id: "entite", label: "Entité Nommée", group: 5, mass: 2 },
+            { id: "visualisation", label: "Visualisation", group: 6, mass: 1 },
+            { id: "evaluation", label: "Évaluation", group: 7, mass: 3 },
+            { id: "scorer", label: "Scorer", group: 7, mass: 1 },
+            { id: "entrainement", label: "Entraînement", group: 8, mass: 3 },
+            { id: "config", label: "Config (.cfg)", group: 8, mass: 1 },
+            { id: "export", label: "Export (JSON)", group: 6, mass: 1 },
+        ]);
+
+        const edges = new vis.DataSet([
+            { from: "corpus", to: "texte", label: "est lu comme" },
+            { from: "texte", to: "nlp", label: "est traité par" },
+            { from: "nlp", to: "doc", label: "produit" },
+            { from: "doc", to: "token", label: "contient des" },
+            { from: "doc", to: "span", label: "contient des" },
+            { from: "span", to: "entite", label: "peut être une" },
+            { from: "doc", to: "entite", label: "expose les" },
+            { from: "doc", to: "visualisation", label: "est visualisé par" },
+            { from: "nlp", to: "evaluation", label: "est évalué via" },
+            { from: "evaluation", to: "scorer", label: "utilise un" },
+            { from: "corpus", to: "entrainement", label: "alimente l'" },
+            { from: "config", to: "entrainement", label: "configure l'" },
+            { from: "entrainement", to: "nlp", label: "produit un nouveau" },
+            { from: "entite", to: "export", label: "sont exportées" },
+        ]);
+
+        const container = document.getElementById('mynetwork');
+        const data = {
+            nodes: nodes,
+            edges: edges,
+        };
+        const options = {
+            nodes: {
+                shape: 'dot',
+                size: 20,
+                font: { size: 14, color: '#333' },
+                borderWidth: 2,
+            },
+            edges: {
+                width: 1,
+                font: { size: 10, align: 'middle' },
+                arrows: { to: { enabled: true, scaleFactor: 0.5 } },
+                color: { color: '#848484', highlight: '#005a9c' }
+            },
+            groups: {
+                0: { color: { background: '#ffa07a', border: '#fa8072' } }, // Données Source
+                1: { color: { background: '#fca130', border: '#e85d04' } }, // Entrée
+                2: { color: { background: '#61affe', border: '#1e90ff' }, font: { color: 'white' } }, // Coeur spaCy
+                3: { color: { background: '#49cc90', border: '#2b9348' } }, // Objet Traité
+                4: { color: { background: '#e0e0e0', border: '#9e9e9e' } }, // Composants Doc
+                5: { color: { background: '#56cfe1', border: '#00b4d8' } }, // Résultat NER
+                6: { color: { background: '#bcf26b', border: '#7cb518' } }, // Sortie/Utilisation
+                7: { color: { background: '#f7b801', border: '#f3722c' } }, // Évaluation
+                8: { color: { background: '#9d4edd', border: '#5a189a' }, font: { color: 'white' } }, // Entraînement
+            },
+            physics: {
+                barnesHut: {
+                    gravitationalConstant: -4000,
+                    centralGravity: 0.15,
+                    springLength: 150,
+                },
+            },
+            interaction: {
+                hover: true,
+            },
+        };
+        const network = new vis.Network(container, data, options);
+
+        network.on("click", function (params) {
+            const infoPanel = document.getElementById('info-panel');
+            if (params.nodes.length > 0) {
+                const nodeId = params.nodes[0];
+                const details = nodeDetails[nodeId];
+                if (details) {
+                    let endpointsHtml = '<ul>';
+                    details.endpoints.forEach(ep => {
+                        const methodClass = `method-${ep.method.toLowerCase()}`;
+                        endpointsHtml += `<li class="${methodClass}"><strong>${ep.method}</strong> ${ep.path}</li>`;
+                    });
+                    endpointsHtml += '</ul>';
+
+                    infoPanel.innerHTML = `
+                        <h3>${details.title}</h3>
+                        <p>${details.description}</p>
+                        <h4>Opérations & Attributs Clés :</h4>
+                        ${endpointsHtml}
+                    `;
+                }
+            } else {
+                 infoPanel.innerHTML = `
+                    <h3>Détails du Concept</h3>
+                    <p>Sélectionnez un élément dans le graphe pour afficher sa description et les opérations associées ici.</p>
+                `;
+            }
+        });
+    </script>
+
+    <footer>
+        <p>&copy; 2025 Graphe généré par IA | Basé sur le tutoriel de Joseph Chazalon</p>
+    </footer>
+
+</body>
+</html>
