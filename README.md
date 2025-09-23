@@ -1,11 +1,3 @@
-Excellente idée ! C'est une très bonne pratique de créditer la source originale.
-
-J'ai mis à jour le fichier `README.md` pour inclure une section "Source & Crédits" plus visible, avec un lien direct vers le dépôt GitHub du tutoriel de Joseph Chazalon.
-
-Voici la version mise à jour. Vous pouvez la copier-coller pour remplacer votre `README.md` actuel.
-
----
-
 # Graphe de Connaissances Interactif - Tutoriel spaCy NER
 
 [![Website](https://img.shields.io/badge/Accéder_au_graphe-Live-blue?style=for-the-badge)](https://multibrasservices.github.io/SpaCy/)
@@ -58,4 +50,5 @@ Si vous souhaitez exécuter ce projet sur votre machine :
     ```bash
     cd SpaCy
     ```
+
 3.  Ouvrez le fichier `index.html` directement dans votre navigateur web.
