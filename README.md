@@ -20,7 +20,7 @@ L'objectif est de fournir une vue d'ensemble dynamique et facile à comprendre d
 
 *(Pensez à ajouter une capture d'écran de votre page ici pour un meilleur impact visuel !)*
 
-![Aperçu du graphe de connaissances spaCy](https://user-images.githubusercontent.com/12345/votre-image.png) <!-- Remplacez ce lien par une vraie capture d'écran -->
+![Aperçu du graphe de connaissances spaCy](kg.PNG) <!-- Remplacez ce lien par une vraie capture d'écran -->
 
 ## 🚀 Fonctionnalités
 
