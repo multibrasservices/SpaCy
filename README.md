@@ -1,6 +1,8 @@
-Absolument. Voici une proposition de fichier `README.md` complet et professionnel pour votre projet. Il met en avant le lien vers votre page GitHub, explique le projet et guide les utilisateurs.
+Excellente idée ! C'est une très bonne pratique de créditer la source originale.
 
-Vous pouvez copier-coller directement ce contenu dans un fichier nommé `README.md` à la racine de votre dépôt GitHub.
+J'ai mis à jour le fichier `README.md` pour inclure une section "Source & Crédits" plus visible, avec un lien direct vers le dépôt GitHub du tutoriel de Joseph Chazalon.
+
+Voici la version mise à jour. Vous pouvez la copier-coller pour remplacer votre `README.md` actuel.
 
 ---
 
@@ -8,7 +10,7 @@ Vous pouvez copier-coller directement ce contenu dans un fichier nommé `README.
 
 [![Website](https://img.shields.io/badge/Accéder_au_graphe-Live-blue?style=for-the-badge)](https://multibrasservices.github.io/SpaCy/)
 
-Ce projet présente un graphe de connaissances interactif qui visualise les concepts clés et le flux de travail d'un projet de Reconnaissance d'Entités Nommées (NER) avec la bibliothèque Python **spaCy**. Il est basé sur le contenu du tutoriel `Initiation à la reconnaissance d'entités nommées avec spaCy`.
+Ce projet présente un graphe de connaissances interactif qui visualise les concepts clés et le flux de travail d'un projet de Reconnaissance d'Entités Nommées (NER) avec la bibliothèque Python **spaCy**.
 
 L'objectif est de fournir une vue d'ensemble dynamique et facile à comprendre des relations entre les différents objets et processus, de la lecture du corpus à l'export des résultats.
 
@@ -18,7 +20,7 @@ L'objectif est de fournir une vue d'ensemble dynamique et facile à comprendre d
 
 *(Pensez à ajouter une capture d'écran de votre page ici pour un meilleur impact visuel !)*
 
-
+![Aperçu du graphe de connaissances spaCy](https://user-images.githubusercontent.com/12345/votre-image.png) <!-- Remplacez ce lien par une vraie capture d'écran -->
 
 ## 🚀 Fonctionnalités
 
@@ -29,16 +31,20 @@ L'objectif est de fournir une vue d'ensemble dynamique et facile à comprendre d
     *   Les **opérations et attributs clés** en Python associés à ce concept (fonctions, attributs d'objets, etc.).
 *   **Groupement par Couleur** : Les nœuds sont regroupés par couleur pour identifier rapidement leur fonction (données source, cœur de spaCy, évaluation, entraînement...).
 
+## 📄 Source & Crédits
+
+Ce graphe est une transposition visuelle du contenu et de la structure du tutoriel **"Initiation à la reconnaissance d'entités nommées avec spaCy"**.
+
+Le cours original, créé par **Joseph Chazalon**, a servi de source principale pour ce projet. Il est vivement recommandé de le consulter pour une compréhension approfondie et pour accéder aux notebooks d'exercices.
+
+➡️ **[Dépôt GitHub du tutoriel original : jchazalon/hn-ariane-ner-tuto-2023](https://github.com/jchazalon/hn-ariane-ner-tuto-2023)**
+
 ## 🛠️ Technologies utilisées
 
 *   **HTML5** : Structure de la page.
 *   **CSS3** : Style et mise en page.
 *   **JavaScript (ES6)** : Logique d'interaction et manipulation des données.
 *   **[Vis.js Network](https://visjs.github.io/vis-network/docs/network/)** : La bibliothèque utilisée pour générer et animer le graphe interactif.
-
-## 📄 Source
-
-Ce graphe est une transposition visuelle du contenu et de la structure du tutoriel **"Initiation à la reconnaissance d'entités nommées avec spaCy"** par Joseph Chazalon. Il a pour but de servir de support d'apprentissage complémentaire.
 
 ## 💻 Utilisation locale
 
