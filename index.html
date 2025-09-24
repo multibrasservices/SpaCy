@@ -2,7 +2,7 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Graphe de Connaissances - Tutoriel spaCy NER</title>
+    <title>Graphe de Connaissances Unifié - spaCy</title>
     <link rel="icon" href="https://spacy.io/favicon.ico" type="image/png">
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <style type="text/css">
@@ -65,18 +65,12 @@
             font-size: 13px;
             word-wrap: break-word;
         }
-        #info-panel .method-fonction {
-            border-left: 4px solid #61affe; /* Blue */
-        }
-        #info-panel .method-attribut {
-            border-left: 4px solid #49cc90; /* Green */
-        }
-        #info-panel .method-objet {
-            border-left: 4px solid #fca130; /* Orange */
-        }
-        #info-panel .method-processus {
-            border-left: 4px solid #9d4edd; /* Purple */
-        }
+        #info-panel .cat-data { border-left: 4px solid #fa8072; }
+        #info-panel .cat-core { border-left: 4px solid #1e90ff; }
+        #info-panel .cat-annotation { border-left: 4px solid #e85d04; }
+        #info-panel .cat-training { border-left: 4px solid #5a189a; }
+        #info-panel .cat-tools { border-left: 4px solid #2b9348; }
+
         footer {
             text-align: center;
             padding: 20px;
@@ -85,26 +79,17 @@
             font-size: 12px;
             border-top: 1px solid #eee;
         }
-        .docs-link {
-            text-align: center;
-            margin: -10px 0 20px 0;
-        }
-        .docs-link a {
-            color: #005a9c;
-            text-decoration: none;
-            font-weight: 500;
-        }
-        .docs-link a:hover {
-            text-decoration: underline;
-        }
+        .docs-link { text-align: center; margin: -10px 0 20px 0; }
+        .docs-link a { color: #005a9c; text-decoration: none; font-weight: 500; }
+        .docs-link a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
 
-    <h1>Graphe de Connaissances du Tutoriel spaCy NER</h1>
-    <p>Cliquez sur un nœud pour explorer les concepts et leurs relations.</p>
+    <h1>Graphe de Connaissances Unifié de la Bibliothèque spaCy</h1>
+    <p>Cliquez sur un nœud pour explorer les concepts, des données brutes à l'entraînement du modèle.</p>
 
-    <p class="docs-link">Basé sur le tutoriel fourni. Pour plus de détails, consultez la <a href="https://spacy.io/usage/spacy-101" target="_blank" rel="noopener noreferrer">documentation officielle de spaCy</a>.</p>
+    <p class="docs-link">Pour plus de détails, consultez la <a href="https://spacy.io/usage/spacy-101" target="_blank" rel="noopener noreferrer">documentation officielle de spaCy</a>.</p>
 
     <div id="graph-container">
         <div id="mynetwork"></div>
@@ -118,153 +103,158 @@
         const nodeDetails = {
             corpus: {
                 title: "Corpus de Données",
-                description: "Un ensemble de textes (fichiers) qui sert de source pour l'analyse, l'entraînement et l'évaluation. Dans le tutoriel, il s'agit du 'French ELTEC NER Open Dataset'.",
-                endpoints: [
-                    { method: "Processus", path: "Téléchargement des données" },
-                    { method: "Processus", path: "Décompression des fichiers" },
-                    { method: "Fonction", path: "glob.glob() pour lister les fichiers" },
-                ]
+                description: "Un ensemble de textes qui sert de source pour l'analyse et l'entraînement. C'est le point de départ de tout projet NLP.",
+                endpoints: [ { category: "Data", path: "Source de la vérité terrain (ground truth)" } ]
             },
             texte: {
-                title: "Texte Brut (chaîne de caractères)",
+                title: "Texte Brut (chaîne)",
                 description: "Le contenu textuel d'un fichier, lu en tant que simple chaîne de caractères. C'est l'entrée brute pour le modèle de langue.",
-                endpoints: [
-                    { method: "Fonction", path: "open(filename).read()" },
-                ]
+                endpoints: [ { category: "Data", path: "open(file).read()" } ]
             },
             nlp: {
                 title: "Modèle de Langage (nlp)",
-                description: "L'objet central de spaCy qui contient le pipeline de traitement (tokenisation, NER, etc.). Il est chargé et appliqué au texte brut pour créer un objet Doc.",
+                description: "L'objet central de spaCy contenant le pipeline de traitement. Il transforme le texte brut en un objet Doc riche en annotations. Un modèle peut être pré-entraîné ou personnalisé.",
                 endpoints: [
-                    { method: "Fonction", path: "spacy.load('fr_core_news_sm')" },
-                    { method: "Fonction", path: "nlp('Votre texte ici...')" },
-                    { method: "Attribut", path: "nlp.pipe_names" },
-                    { method: "Attribut", path: "nlp.pipe()" },
+                    { category: "Core", path: "spacy.load('fr_core_news_sm')" },
+                    { category: "Core", path: "doc = nlp('texte...')" },
+                    { category: "Core", path: "nlp.pipe_names" }
                 ]
             },
             doc: {
                 title: "Objet Doc",
-                description: "Un conteneur riche pour le texte traité. Il contient les tokens, les spans, les entités nommées et toutes les annotations générées par le pipeline.",
+                description: "Un conteneur pour le texte traité. Il contient les tokens, les spans, les entités et toutes les annotations. C'est l'objet principal que vous manipulez.",
                 endpoints: [
-                    { method: "Attribut", path: "doc.ents" },
-                    { method: "Attribut", path: "doc.text" },
-                    { method: "Objet", path: "Itération : for token in doc:" },
+                    { category: "Core", path: "doc.ents (entités)" },
+                    { category: "Core", path: "doc.sents (phrases)" },
+                    { category: "Core", path: "Itération : for token in doc:" }
                 ]
             },
             token: {
                 title: "Token",
-                description: "L'unité de base du texte, généralement un mot ou un signe de ponctuation. Un objet Doc est une séquence de Tokens.",
+                description: "L'unité de base du texte (mot, ponctuation). Chaque token possède de nombreuses annotations linguistiques.",
                 endpoints: [
-                    { method: "Attribut", path: "token.text" },
-                    { method: "Attribut", path: "token.pos_" },
-                    { method: "Attribut", path: "token.dep_" },
-                    { method: "Attribut", path: "token.is_alpha, token.is_punct" },
+                    { category: "Annotation", path: ".text, .lemma_, .pos_, .dep_" },
+                    { category: "Annotation", path: ".is_stop, .is_alpha" }
                 ]
             },
             span: {
                 title: "Span",
-                description: "Une tranche d'un objet Doc, composée d'un ou plusieurs tokens contigus. Les entités nommées sont représentées comme des Spans.",
+                description: "Une tranche d'un Doc composée d'un ou plusieurs tokens. Les entités nommées sont le type de Span le plus courant.",
                 endpoints: [
-                    { method: "Attribut", path: "span.text" },
-                    { method: "Attribut", path: "span.label_" },
-                    { method: "Attribut", path: "span.start, span.end" },
+                    { category: "Annotation", path: ".text, .label_" },
+                    { category: "Annotation", path: ".start, .end (indices)" }
                 ]
             },
             entite: {
                 title: "Entité Nommée (NER)",
-                description: "Un Span auquel une étiquette (label) a été assignée (ex: 'PER' pour personne, 'LOC' pour lieu). C'est le résultat principal de la reconnaissance d'entités.",
+                description: "Un Span avec une étiquette (ex: 'PER', 'LOC'). C'est le résultat d'un composant de Reconnaissance d'Entités Nommées.",
                 endpoints: [
-                    { method: "Attribut", path: "doc.ents (liste les entités)" },
-                    { method: "Attribut", path: "ent.text, ent.label_" },
+                    { category: "Annotation", path: "doc.ents" },
+                    { category: "Annotation", path: "ent.text, ent.label_" }
                 ]
             },
             visualisation: {
                 title: "Visualisation (displaCy)",
-                description: "L'outil intégré de spaCy pour afficher de manière graphique les entités nommées ou les dépendances syntaxiques directement dans un notebook ou une page web.",
-                endpoints: [
-                    { method: "Fonction", path: "displacy.render(doc, style='ent')" },
-                ]
+                description: "L'outil de spaCy pour afficher graphiquement les entités ou les dépendances syntaxiques d'un Doc.",
+                endpoints: [ { category: "Tools", path: "displacy.render(doc, style='ent')" } ]
             },
-            evaluation: {
-                title: "Évaluation de Performance",
-                description: "Le processus qui consiste à mesurer la qualité d'un modèle en comparant ses prédictions à une vérité terrain (données annotées).",
+            matcher: {
+                title: "Matcher",
+                description: "Permet de trouver des séquences de tokens basées sur des règles, comme des expressions régulières pour les annotations linguistiques.",
                 endpoints: [
-                    { method: "Processus", path: "Calcul de Précision, Rappel, F-score" },
-                ]
-            },
-            scorer: {
-                title: "Objet Scorer",
-                description: "Un objet spaCy qui calcule les métriques de performance (Précision, Rappel, F-score) en comparant les entités prédites et les entités de référence.",
-                endpoints: [
-                    { method: "Objet", path: "Scorer()" },
-                    { method: "Fonction", path: "scorer.score_spans(examples, 'ents')" },
-                ]
-            },
-            entrainement: {
-                title: "Entraînement de Modèle",
-                description: "Le processus d'apprentissage ou de spécialisation d'un modèle NER à partir d'exemples annotés (jeu d'entraînement).",
-                endpoints: [
-                    { method: "Processus", path: "python -m spacy train ..." },
-                ]
-            },
-            config: {
-                title: "Fichier de Configuration",
-                description: "Un fichier (.cfg) qui définit tous les paramètres pour l'entraînement d'un modèle : architecture, hyperparamètres, chemins des données, etc.",
-                endpoints: [
-                    { method: "Processus", path: "spacy init fill-config" },
+                    { category: "Tools", path: "Matcher(nlp.vocab)" },
+                    { category: "Tools", path: "matcher.add('PATTERN', [rules])" }
                 ]
             },
             export: {
                 title: "Export des Données",
-                description: "L'étape finale où les résultats extraits (par exemple, la liste de toutes les entités de type 'LOC') sont sauvegardés dans un format structuré (JSON) pour une utilisation ultérieure.",
+                description: "Sauvegarde les informations extraites (comme les entités) dans un format structuré (JSON, CSV) pour une utilisation future.",
+                endpoints: [ { category: "Tools", path: "json.dump(data, file)" } ]
+            },
+            entrainement: {
+                title: "Entraînement de Modèle",
+                description: "Processus de mise à jour des poids d'un modèle (comme le composant NER) à partir d'exemples annotés provenant du Corpus.",
                 endpoints: [
-                    { method: "Fonction", path: "json.dump(data, file)" },
+                    { category: "Training", path: "python -m spacy train ..." },
+                    { category: "Training", path: "Nécessite un jeu d'entraînement et de validation" }
                 ]
+            },
+            config: {
+                title: "Fichier de Configuration",
+                description: "Un fichier (.cfg) qui définit tous les paramètres pour l'entraînement : architecture, hyperparamètres, données, etc.",
+                endpoints: [ { category: "Training", path: "spacy init fill-config" } ]
+            },
+            evaluation: {
+                title: "Évaluation de Performance",
+                description: "Mesure la qualité d'un modèle en comparant ses prédictions aux annotations de référence (vérité terrain).",
+                endpoints: [ { category: "Training", path: "Calcul de Précision, Rappel, F-score" } ]
+            },
+            scorer: {
+                title: "Objet Scorer",
+                description: "Un objet spaCy qui calcule les métriques de performance en comparant les entités prédites et de référence.",
+                endpoints: [ { category: "Training", path: "scorer.score_spans(...)" } ]
             }
         };
 
         const nodes = new vis.DataSet([
+            // Flux de données
             { id: "corpus", label: "Corpus", group: 0, mass: 3 },
-            { id: "texte", label: "Texte Brut", group: 1, mass: 2 },
-            { id: "nlp", label: "Modèle (nlp)", group: 2, mass: 4 },
-            { id: "doc", label: "Objet Doc", group: 3, mass: 3 },
-            { id: "token", label: "Token", group: 4, mass: 1 },
-            { id: "span", label: "Span", group: 4, mass: 1 },
-            { id: "entite", label: "Entité Nommée", group: 5, mass: 2 },
-            { id: "visualisation", label: "Visualisation", group: 6, mass: 1 },
-            { id: "evaluation", label: "Évaluation", group: 7, mass: 3 },
-            { id: "scorer", label: "Scorer", group: 7, mass: 1 },
-            { id: "entrainement", label: "Entraînement", group: 8, mass: 3 },
-            { id: "config", label: "Config (.cfg)", group: 8, mass: 1 },
-            { id: "export", label: "Export (JSON)", group: 6, mass: 1 },
+            { id: "texte", label: "Texte Brut", group: 0, mass: 2 },
+            
+            // Coeur spaCy
+            { id: "nlp", label: "Modèle (nlp)", group: 1, mass: 5 },
+            { id: "doc", label: "Objet Doc", group: 1, mass: 4 },
+
+            // Annotations
+            { id: "token", label: "Token", group: 2, mass: 1 },
+            { id: "span", label: "Span", group: 2, mass: 1 },
+            { id: "entite", label: "Entité Nommée", group: 2, mass: 2 },
+
+            // Entraînement & Évaluation
+            { id: "entrainement", label: "Entraînement", group: 3, mass: 4 },
+            { id: "config", label: "Config (.cfg)", group: 3, mass: 2 },
+            { id: "evaluation", label: "Évaluation", group: 3, mass: 3 },
+            { id: "scorer", label: "Scorer", group: 3, mass: 1 },
+
+            // Outils & Sorties
+            { id: "matcher", label: "Matcher", group: 4, mass: 2 },
+            { id: "visualisation", label: "Visualisation", group: 4, mass: 1 },
+            { id: "export", label: "Export (JSON)", group: 4, mass: 1 },
         ]);
 
         const edges = new vis.DataSet([
+            // Du corpus au doc
             { from: "corpus", to: "texte", label: "est lu comme" },
             { from: "texte", to: "nlp", label: "est traité par" },
-            { from: "nlp", to: "doc", label: "produit" },
+            { from: "nlp", to: "doc", label: "produit un" },
+            
+            // Contenu du doc
             { from: "doc", to: "token", label: "contient des" },
             { from: "doc", to: "span", label: "contient des" },
             { from: "span", to: "entite", label: "peut être une" },
             { from: "doc", to: "entite", label: "expose les" },
-            { from: "doc", to: "visualisation", label: "est visualisé par" },
-            { from: "nlp", to: "evaluation", label: "est évalué via" },
-            { from: "evaluation", to: "scorer", label: "utilise un" },
+            
+            // Utilisation du doc et des entités
+            { from: "doc", to: "visualisation", label: "est visualisé via" },
+            { from: "doc", to: "matcher", label: "est analysé par le" },
+            { from: "entite", to: "export", label: "sont exportées" },
+            
+            // Boucle d'entraînement
             { from: "corpus", to: "entrainement", label: "alimente l'" },
             { from: "config", to: "entrainement", label: "configure l'" },
-            { from: "entrainement", to: "nlp", label: "produit un nouveau" },
-            { from: "entite", to: "export", label: "sont exportées" },
+            { from: "entrainement", to: "nlp", label: "produit/affine un", dashes: true },
+            
+            // Boucle d'évaluation
+            { from: "nlp", to: "evaluation", label: "est évalué" },
+            { from: "corpus", to: "evaluation", label: "fournit la réf.", dashes: true },
+            { from: "evaluation", to: "scorer", label: "utilise un" },
         ]);
 
         const container = document.getElementById('mynetwork');
-        const data = {
-            nodes: nodes,
-            edges: edges,
-        };
+        const data = { nodes: nodes, edges: edges };
         const options = {
             nodes: {
-                shape: 'dot',
-                size: 20,
+                shape: 'dot', size: 20,
                 font: { size: 14, color: '#333' },
                 borderWidth: 2,
             },
@@ -275,26 +265,20 @@
                 color: { color: '#848484', highlight: '#005a9c' }
             },
             groups: {
-                0: { color: { background: '#ffa07a', border: '#fa8072' } }, // Données Source
-                1: { color: { background: '#fca130', border: '#e85d04' } }, // Entrée
-                2: { color: { background: '#61affe', border: '#1e90ff' }, font: { color: 'white' } }, // Coeur spaCy
-                3: { color: { background: '#49cc90', border: '#2b9348' } }, // Objet Traité
-                4: { color: { background: '#e0e0e0', border: '#9e9e9e' } }, // Composants Doc
-                5: { color: { background: '#56cfe1', border: '#00b4d8' } }, // Résultat NER
-                6: { color: { background: '#bcf26b', border: '#7cb518' } }, // Sortie/Utilisation
-                7: { color: { background: '#f7b801', border: '#f3722c' } }, // Évaluation
-                8: { color: { background: '#9d4edd', border: '#5a189a' }, font: { color: 'white' } }, // Entraînement
+                0: { color: { background: '#ffa07a', border: '#fa8072' } }, // Data Flow
+                1: { color: { background: '#61affe', border: '#1e90ff' }, font: { color: 'white' } }, // Core spaCy
+                2: { color: { background: '#fca130', border: '#e85d04' } }, // Annotations
+                3: { color: { background: '#9d4edd', border: '#5a189a' }, font: { color: 'white' } }, // Training
+                4: { color: { background: '#49cc90', border: '#2b9348' } }, // Tools & Outputs
             },
             physics: {
                 barnesHut: {
-                    gravitationalConstant: -4000,
+                    gravitationalConstant: -5000,
                     centralGravity: 0.15,
-                    springLength: 150,
+                    springLength: 180,
                 },
             },
-            interaction: {
-                hover: true,
-            },
+            interaction: { hover: true },
         };
         const network = new vis.Network(container, data, options);
 
@@ -306,15 +290,15 @@
                 if (details) {
                     let endpointsHtml = '<ul>';
                     details.endpoints.forEach(ep => {
-                        const methodClass = `method-${ep.method.toLowerCase()}`;
-                        endpointsHtml += `<li class="${methodClass}"><strong>${ep.method}</strong> ${ep.path}</li>`;
+                        const catClass = `cat-${ep.category.toLowerCase()}`;
+                        endpointsHtml += `<li class="${catClass}"><strong>${ep.category}</strong>: ${ep.path}</li>`;
                     });
                     endpointsHtml += '</ul>';
 
                     infoPanel.innerHTML = `
                         <h3>${details.title}</h3>
                         <p>${details.description}</p>
-                        <h4>Opérations & Attributs Clés :</h4>
+                        <h4>Exemples & Attributs Clés :</h4>
                         ${endpointsHtml}
                     `;
                 }
@@ -328,7 +312,7 @@
     </script>
 
     <footer>
-        <p>&copy; 2025 Graphe généré par IA | Basé sur le tutoriel de Joseph Chazalon</p>
+        <p>&copy; 2025 Graphe Unifié par IA | Inspiré par les tutoriels spaCy</p>
     </footer>
 
 </body>
