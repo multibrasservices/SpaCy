@@ -1,46 +1,53 @@
-# Graphe de Connaissances Interactif - Tutoriel spaCy NER
+Absolument ! Mettre à jour le `README.md` est une excellente idée pour refléter la fusion et la nouvelle portée du projet. Un bon README est essentiel pour que les visiteurs comprennent rapidement la valeur de votre travail.
+
+Voici une version mise à jour du fichier, qui explique la fusion, met en avant la vision complète du graphe et conserve les crédits importants.
+
+---
+
+# Graphe de Connaissances Unifié - Bibliothèque spaCy
 
 [![Website](https://img.shields.io/badge/Accéder_au_graphe-Live-blue?style=for-the-badge)](https://multibrasservices.github.io/SpaCy/)
 
-Ce projet présente un graphe de connaissances interactif qui visualise les concepts clés et le flux de travail d'un projet de Reconnaissance d'Entités Nommées (NER) avec la bibliothèque Python **spaCy**.
+Ce projet présente un **graphe de connaissances interactif unifié** pour l'apprentissage de la bibliothèque Python **spaCy**. Il fusionne deux perspectives :
 
-L'objectif est de fournir une vue d'ensemble dynamique et facile à comprendre des relations entre les différents objets et processus, de la lecture du corpus à l'export des résultats.
+1.  Les **concepts fondamentaux** de spaCy (objets `Doc`, `Token`, `Span`, `Matcher`, etc.).
+2.  Le **flux de travail pratique** d'un projet de Reconnaissance d'Entités Nommées (NER), de la lecture des données à l'entraînement du modèle.
+
+L'objectif est de fournir une ressource d'apprentissage complète et dynamique, montrant non seulement les "briques" de spaCy, mais aussi comment les assembler dans un projet concret.
 
 **[➡️ Accéder à la version live du graphe](https://multibrasservices.github.io/SpaCy/)**
 
 ## ✨ Aperçu
 
-*(Pensez à ajouter une capture d'écran de votre page ici pour un meilleur impact visuel !)*
+*(N'oubliez pas de mettre à jour la capture d'écran pour montrer le nouveau graphe fusionné !)*
 
-![Aperçu du graphe de connaissances spaCy](kg.PNG) <!-- Remplacez ce lien par une vraie capture d'écran -->
+![Aperçu du graphe de connaissances unifié spaCy](kg.PNG)
 
 ## 🚀 Fonctionnalités
 
-*   **Visualisation des Concepts** : Les nœuds représentent les concepts fondamentaux comme le `Modèle (nlp)`, l'`Objet Doc`, le `Corpus`, l'`Évaluation`, etc.
-*   **Relations Claires** : Les arêtes (flèches) illustrent comment les concepts interagissent (ex: un `Modèle (nlp)` *produit* un `Objet Doc`).
-*   **Panneau d'Information Dynamique** : Cliquez sur n'importe quel nœud pour afficher dans le panneau de droite :
-    *   Une **description détaillée** de son rôle dans le processus NER.
-    *   Les **opérations et attributs clés** en Python associés à ce concept (fonctions, attributs d'objets, etc.).
-*   **Groupement par Couleur** : Les nœuds sont regroupés par couleur pour identifier rapidement leur fonction (données source, cœur de spaCy, évaluation, entraînement...).
+*   **Vue d'Ensemble Complète** : Visualisez sur un seul graphe les objets principaux de spaCy et leur application dans un pipeline de projet NER.
+*   **Relations Logiques** : Les arêtes (flèches) illustrent les interactions clés (ex: un `Modèle (nlp)` *produit* un `Objet Doc` qui *contient* des `Token`).
+*   **Panneau d'Information Dynamique** : Cliquez sur n'importe quel nœud pour afficher dans le panneau de droite une description détaillée et les opérations ou attributs Python associés.
+*   **Groupement par Couleur** : Les nœuds sont regroupés par couleur pour identifier instantanément leur rôle (Flux de données, Cœur de spaCy, Annotations, Entraînement, Outils...).
 
 ## 📄 Source & Crédits
 
-Ce graphe est une transposition visuelle du contenu et de la structure du tutoriel **"Initiation à la reconnaissance d'entités nommées avec spaCy"**.
-
-Le cours original, créé par **Joseph Chazalon**, a servi de source principale pour ce projet. Il est vivement recommandé de le consulter pour une compréhension approfondie et pour accéder aux notebooks d'exercices.
+Ce graphe a été initialement inspiré par le contenu et la structure de l'excellent tutoriel **"Initiation à la reconnaissance d'entités nommées avec spaCy"** de **Joseph Chazalon**. Ce cours reste une ressource fondamentale pour une compréhension approfondie du sujet.
 
 ➡️ **[Dépôt GitHub du tutoriel original : jchazalon/hn-ariane-ner-tuto-2023](https://github.com/jchazalon/hn-ariane-ner-tuto-2023)**
+
+Le projet a ensuite été étendu pour intégrer les concepts de base de spaCy afin de créer une ressource d'apprentissage unifiée.
 
 ## 🛠️ Technologies utilisées
 
 *   **HTML5** : Structure de la page.
 *   **CSS3** : Style et mise en page.
 *   **JavaScript (ES6)** : Logique d'interaction et manipulation des données.
-*   **[Vis.js Network](https://visjs.github.io/vis-network/docs/network/)** : La bibliothèque utilisée pour générer et animer le graphe interactif.
+*   **[Vis.js Network](https://visjs.github.io/vis-network/docs/network/)** : La bibliothèque Javascript qui génère et anime le graphe interactif.
 
 ## 💻 Utilisation locale
 
-Si vous souhaitez exécuter ce projet sur votre machine :
+Si vous souhaitez exécuter ou modifier ce projet sur votre machine :
 
 1.  Clonez le dépôt :
     ```bash
@@ -50,5 +57,4 @@ Si vous souhaitez exécuter ce projet sur votre machine :
     ```bash
     cd SpaCy
     ```
-
 3.  Ouvrez le fichier `index.html` directement dans votre navigateur web.
