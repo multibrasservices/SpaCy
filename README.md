@@ -1,9 +1,3 @@
-Absolument ! Mettre à jour le `README.md` est une excellente idée pour refléter la fusion et la nouvelle portée du projet. Un bon README est essentiel pour que les visiteurs comprennent rapidement la valeur de votre travail.
-
-Voici une version mise à jour du fichier, qui explique la fusion, met en avant la vision complète du graphe et conserve les crédits importants.
-
----
-
 # Graphe de Connaissances Unifié - Bibliothèque spaCy
 
 [![Website](https://img.shields.io/badge/Accéder_au_graphe-Live-blue?style=for-the-badge)](https://multibrasservices.github.io/SpaCy/)
@@ -57,4 +51,5 @@ Si vous souhaitez exécuter ou modifier ce projet sur votre machine :
     ```bash
     cd SpaCy
     ```
+
 3.  Ouvrez le fichier `index.html` directement dans votre navigateur web.
