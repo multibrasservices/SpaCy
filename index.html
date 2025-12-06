@@ -6,65 +6,131 @@
     <link rel="icon" href="https://spacy.io/favicon.ico" type="image/png">
     <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
     <style type="text/css">
+        :root {
+            --bg-primary: #f4f7f9;
+            --bg-secondary: #fff;
+            --text-primary: #333;
+            --text-secondary: #555;
+            --text-muted: #777;
+            --border-color: #ccc;
+            --border-light: #e0e0e0;
+            --border-very-light: #eee;
+            --heading-color: #0d3a5f;
+            --link-color: #005a9c;
+            --panel-bg: #eef5ff;
+            --shadow: rgba(0,0,0,0.1);
+        }
+
+        body.dark-mode {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --border-color: #444;
+            --border-light: #3d3d3d;
+            --border-very-light: #333;
+            --heading-color: #64b5f6;
+            --link-color: #64b5f6;
+            --panel-bg: #1f3a52;
+            --shadow: rgba(0,0,0,0.3);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-            background-color: #f4f7f9;
-            color: #333;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
             margin: 0;
             padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
         }
+
+        #theme-toggle {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 10px 15px;
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px var(--shadow);
+            z-index: 1000;
+        }
+
+        #theme-toggle:hover {
+            box-shadow: 0 4px 8px var(--shadow);
+            transform: scale(1.05);
+        }
+
         h1, h2 {
-            color: #0d3a5f;
+            color: var(--heading-color);
             text-align: center;
         }
+
         p {
             text-align: center;
-            color: #555;
+            color: var(--text-secondary);
         }
+
         #graph-container {
             display: flex;
             flex-direction: row;
-            border: 1px solid #ccc;
+            border: 1px solid var(--border-color);
             border-radius: 8px;
-            background-color: #fff;
-            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: var(--bg-secondary);
+            box-shadow: 0 4px 8px var(--shadow);
             height: 85vh;
+            transition: all 0.3s ease;
         }
+
         #mynetwork {
             width: 70%;
-            border-right: 1px solid #ccc;
+            border-right: 1px solid var(--border-color);
             height: 100%;
         }
+
         #info-panel {
             width: 30%;
             padding: 20px;
             overflow-y: auto;
             box-sizing: border-box;
+            background-color: var(--bg-secondary);
         }
+
         #info-panel h3 {
             margin-top: 0;
-            color: #005a9c;
-            border-bottom: 2px solid #e0e0e0;
+            color: var(--link-color);
+            border-bottom: 2px solid var(--border-light);
             padding-bottom: 10px;
         }
+
         #info-panel p {
             text-align: left;
             font-size: 14px;
             line-height: 1.6;
+            color: var(--text-secondary);
         }
+
         #info-panel ul {
             list-style-type: none;
             padding: 0;
         }
+
         #info-panel li {
-            background-color: #eef5ff;
+            background-color: var(--panel-bg);
             margin-bottom: 8px;
             padding: 10px;
             border-radius: 4px;
             font-family: 'Courier New', Courier, monospace;
             font-size: 13px;
             word-wrap: break-word;
+            color: var(--text-primary);
+            transition: background-color 0.3s ease;
         }
+
         #info-panel .cat-data { border-left: 4px solid #fa8072; }
         #info-panel .cat-core { border-left: 4px solid #1e90ff; }
         #info-panel .cat-annotation { border-left: 4px solid #e85d04; }
@@ -75,16 +141,20 @@
             text-align: center;
             padding: 20px;
             margin-top: 20px;
-            color: #777;
+            color: var(--text-muted);
             font-size: 12px;
-            border-top: 1px solid #eee;
+            border-top: 1px solid var(--border-very-light);
+            transition: all 0.3s ease;
         }
+
         .docs-link { text-align: center; margin: -10px 0 20px 0; }
-        .docs-link a { color: #005a9c; text-decoration: none; font-weight: 500; }
+        .docs-link a { color: var(--link-color); text-decoration: none; font-weight: 500; }
         .docs-link a:hover { text-decoration: underline; }
     </style>
 </head>
 <body>
+
+    <button id="theme-toggle" title="Basculer le mode sombre">🌙</button>
 
     <h1>Graphe de Connaissances Unifié de la Bibliothèque spaCy</h1>
     <p>Cliquez sur un nœud pour explorer les concepts, des données brutes à l'entraînement du modèle.</p>
@@ -100,6 +170,40 @@
     </div>
 
     <script type="text/javascript">
+        // Dark Mode Toggle
+        const themeToggle = document.getElementById('theme-toggle');
+        const body = document.body;
+
+        // Charger la préférence sauvegardée au démarrage
+        function initDarkMode() {
+            const savedMode = localStorage.getItem('theme-mode');
+            const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+
+            if (savedMode === 'dark' || (savedMode === null && prefersDark)) {
+                body.classList.add('dark-mode');
+                themeToggle.textContent = '☀️';
+            } else {
+                body.classList.remove('dark-mode');
+                themeToggle.textContent = '🌙';
+            }
+        }
+
+        // Basculer le mode sombre
+        themeToggle.addEventListener('click', function() {
+            body.classList.toggle('dark-mode');
+
+            if (body.classList.contains('dark-mode')) {
+                localStorage.setItem('theme-mode', 'dark');
+                themeToggle.textContent = '☀️';
+            } else {
+                localStorage.setItem('theme-mode', 'light');
+                themeToggle.textContent = '🌙';
+            }
+        });
+
+        // Initialiser au chargement
+        initDarkMode();
+
         const nodeDetails = {
             corpus: {
                 title: "Corpus de Données",
